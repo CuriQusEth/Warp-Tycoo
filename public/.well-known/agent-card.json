@@ -1,0 +1,42 @@
+{
+  "name": "Warp Tycoo Orchestrator",
+  "description": "Warp Tycoo platformunda çalışan ERC-8004 uyumlu AI Agent. Warp tycoon mechanics, economic automation, multi-warp management ve strategic empire building yapan akıllı orchestrator.",
+  "version": "1.0.0",
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "image": "https://warp-tycoo.vercel.app/logo.png",
+  "wallets": {
+    "base": "0x29536D0bc1004ab274c4F0F59734Ad74D4559b7B"
+  },
+  "services": [
+    {
+      "name": "A2A",
+      "endpoint": "https://warp-tycoo.vercel.app/.well-known/agent-card.json",
+      "version": "1.0.0",
+      "description": "Agent-to-Agent communication"
+    },
+    {
+      "name": "MCP",
+      "endpoint": "https://warp-tycoo.vercel.app/api/mcp",
+      "version": "1.0.0",
+      "description": "Model Context Protocol - Active command execution"
+    },
+    {
+      "name": "API",
+      "endpoint": "https://warp-tycoo.vercel.app/api/agent",
+      "version": "1.0.0",
+      "description": "Main agent control API"
+    }
+  ],
+  "capabilities": [
+    "warp-tycoon-mechanics",
+    "economic-automation",
+    "multi-warp-management",
+    "strategic-empire-building",
+    "resource-orchestration",
+    "trading-automation",
+    "mcp-command-execution"
+  ],
+  "supportedChains": ["eip155:8453"],
+  "active": true,
+  "status": "online"
+}
