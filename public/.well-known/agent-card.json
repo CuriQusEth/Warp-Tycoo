@@ -36,6 +36,43 @@
     "trading-automation",
     "mcp-command-execution"
   ],
+  "skills": [
+    {
+      "id": "warp-tycoon-mechanics",
+      "name": "Warp Tycoon Mechanics",
+      "description": "Core mechanics for operating a warp tycoon empire"
+    },
+    {
+      "id": "economic-automation",
+      "name": "Economic Automation",
+      "description": "Automated economic growth and yield optimization"
+    },
+    {
+      "id": "multi-warp-management",
+      "name": "Multi-Warp Management",
+      "description": "Manage resources across multiple dimensional warps"
+    },
+    {
+      "id": "strategic-empire-building",
+      "name": "Strategic Empire Building",
+      "description": "Long-term empire planning and prestige logic"
+    },
+    {
+      "id": "resource-orchestration",
+      "name": "Resource Orchestration",
+      "description": "Orchestrates resources between extraction and processing facilities"
+    },
+    {
+      "id": "trading-automation",
+      "name": "Trading Automation",
+      "description": "Trades resources automatically within the dimensional network"
+    },
+    {
+      "id": "mcp-command-execution",
+      "name": "MCP Command Execution",
+      "description": "Capability to execute commands remotely via the MCP protocol"
+    }
+  ],
   "supportedChains": ["eip155:8453"],
   "active": true,
   "status": "online"
