@@ -53,29 +53,25 @@ export async function POST(req: Request) {
         result: {
           tools: [
             {
-              name: "get_race_status",
-              description: "Get the current status of the race",
+              name: "get_empire_status",
+              description: "Get the current status of the warp empire",
               inputSchema: { type: "object", properties: {} }
             },
             {
-              name: "start_race",
-              description: "Start a new race",
+              name: "collect_resources",
+              description: "Collect all extracted resources",
               inputSchema: { type: "object", properties: {} }
             },
             {
-              name: "get_leaderboard",
-              description: "Retrieve the current leaderboard",
-              inputSchema: { type: "object", properties: {} }
-            },
-            {
-              name: "optimize_speed",
-              description: "Optimize the vehicle speed",
-              inputSchema: { type: "object", properties: {} }
-            },
-            {
-              name: "get_track_info",
-              description: "Get information about the current track",
-              inputSchema: { type: "object", properties: {} }
+              name: "upgrade_gate",
+              description: "Upgrade a dimensional warp gate",
+              inputSchema: { 
+                type: "object", 
+                properties: {
+                  gateId: { type: "string" }
+                },
+                required: ["gateId"]
+              }
             }
           ]
         }
@@ -92,7 +88,7 @@ export async function POST(req: Request) {
           content: [
             {
               type: "text",
-              text: `Command executed for tool: ${toolName}. [PLACEHOLDER] functionality.`
+              text: `Command executed for tool: ${toolName}. [PLACEHOLDER]`
             }
           ]
         }
@@ -101,12 +97,36 @@ export async function POST(req: Request) {
 
     // 4. Prompts list
     if (method === 'prompts/list') {
-      return NextResponse.json({ jsonrpc, id, result: { prompts: [] } }, { headers: { 'Access-Control-Allow-Origin': '*' } });
+      return NextResponse.json({ 
+        jsonrpc, 
+        id, 
+        result: { 
+          prompts: [
+            {
+              name: "empire_overview",
+              description: "Get an overview of the empire's current layout",
+              arguments: []
+            }
+          ] 
+        } 
+      }, { headers: { 'Access-Control-Allow-Origin': '*' } });
     }
 
     // 5. Resources list
     if (method === 'resources/list') {
-      return NextResponse.json({ jsonrpc, id, result: { resources: [] } }, { headers: { 'Access-Control-Allow-Origin': '*' } });
+      return NextResponse.json({ 
+        jsonrpc, 
+        id, 
+        result: { 
+          resources: [
+            {
+              uri: "warp://empire/dashboard",
+              name: "Empire Dashboard",
+              description: "Main dashboard data for the Warp Tycoon empire"
+            }
+          ] 
+        } 
+      }, { headers: { 'Access-Control-Allow-Origin': '*' } });
     }
 
     // Generic fallback for any other command execution POSTs
