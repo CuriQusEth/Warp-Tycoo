@@ -11,19 +11,7 @@ export async function OPTIONS() {
 
 export async function GET() {
   return NextResponse.json(
-    {
-      protocol: "MCP",
-      version: "1.0.0",
-      name: "Warp Tycoo MCP Endpoint",
-      status: "active",
-      description: "Active MCP server for Warp Tycoo Orchestrator Agent",
-      capabilities: [
-        "warp-tycoon-mechanics",
-        "economic-automation",
-        "strategic-empire-building"
-      ],
-      timestamp: new Date().toISOString()
-    },
+    { status: "MCP Server Active. Use POST for JSON-RPC." },
     {
       headers: {
         'Access-Control-Allow-Origin': '*',
