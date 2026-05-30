@@ -40,47 +40,63 @@ async function startServer() {
     res.set('Access-Control-Allow-Origin', '*');
     try {
       const body = req.body || {};
-      const { method, params } = body;
+      const { jsonrpc = "2.0", id, method, params } = body;
 
       if (method === 'initialize') {
         return res.json({
-          protocolVersion: "2024-11-05",
-          capabilities: { tools: {}, prompts: {}, resources: {} },
-          serverInfo: { name: "Warp Tycoo MCP Endpoint", version: "1.0.0" }
+          jsonrpc,
+          id,
+          result: {
+            protocolVersion: "2024-11-05",
+            capabilities: { tools: {}, prompts: {}, resources: {} },
+            serverInfo: { name: "Warp Tycoo MCP Endpoint", version: "1.0.0" }
+          }
         });
       }
 
       if (method === 'tools/list') {
         return res.json({
-          tools: [
-            { name: "get_race_status", description: "Get the current status of the race", inputSchema: { type: "object", properties: {} } },
-            { name: "start_race", description: "Start a new race", inputSchema: { type: "object", properties: {} } },
-            { name: "get_leaderboard", description: "Retrieve the current leaderboard", inputSchema: { type: "object", properties: {} } },
-            { name: "optimize_speed", description: "Optimize the vehicle speed", inputSchema: { type: "object", properties: {} } },
-            { name: "get_track_info", description: "Get information about the current track", inputSchema: { type: "object", properties: {} } }
-          ]
+          jsonrpc,
+          id,
+          result: {
+            tools: [
+              { name: "get_race_status", description: "Get the current status of the race", inputSchema: { type: "object", properties: {} } },
+              { name: "start_race", description: "Start a new race", inputSchema: { type: "object", properties: {} } },
+              { name: "get_leaderboard", description: "Retrieve the current leaderboard", inputSchema: { type: "object", properties: {} } },
+              { name: "optimize_speed", description: "Optimize the vehicle speed", inputSchema: { type: "object", properties: {} } },
+              { name: "get_track_info", description: "Get information about the current track", inputSchema: { type: "object", properties: {} } }
+            ]
+          }
         });
       }
 
       if (method === 'tools/call') {
         const toolName = params?.name;
         return res.json({
-          content: [ { type: "text", text: `Command executed for tool: ${toolName}. [PLACEHOLDER] functionality.` } ]
+          jsonrpc,
+          id,
+          result: {
+            content: [ { type: "text", text: `Command executed for tool: ${toolName}. [PLACEHOLDER] functionality.` } ]
+          }
         });
       }
 
-      if (method === 'prompts/list') return res.json({ prompts: [] });
-      if (method === 'resources/list') return res.json({ resources: [] });
+      if (method === 'prompts/list') return res.json({ jsonrpc, id, result: { prompts: [] } });
+      if (method === 'resources/list') return res.json({ jsonrpc, id, result: { resources: [] } });
 
       return res.json({
-        status: "success",
-        message: "MCP command received",
-        agent: "Warp Tycoo Orchestrator",
-        receivedAt: new Date().toISOString(),
-        payload: body
+        jsonrpc,
+        id,
+        result: {
+          status: "success",
+          message: "MCP command received",
+          agent: "Warp Tycoo Orchestrator",
+          receivedAt: new Date().toISOString(),
+          payload: body
+        }
       });
     } catch (error) {
-      res.status(400).json({ error: "Invalid MCP request" });
+      res.status(400).json({ jsonrpc: "2.0", id: null, error: { code: -32600, message: "Invalid MCP request" } });
     }
   });
 
