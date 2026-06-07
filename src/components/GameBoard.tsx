@@ -20,6 +20,16 @@ export function GameBoard() {
   const stations = useGameStore(s => s.stations);
   const upgradeStation = useGameStore(s => s.upgradeStation);
   const updateStationPosition = useGameStore(s => s.updateStationPosition);
+  const addCredits = useGameStore(s => s.addCredits);
+  const dimensionLevel = useGameStore(s => s.dimensionLevel);
+
+  const handleWarpCoreTap = () => {
+    // Generate energy (credits) based on dimension level
+    addCredits(5 * dimensionLevel);
+    if (window.navigator && window.navigator.vibrate) {
+      window.navigator.vibrate(20);
+    }
+  };
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-auto">
@@ -27,19 +37,21 @@ export function GameBoard() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px]"></div>
       
       {/* Central Warp Gate Visual */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <motion.div 
           animate={{ rotate: 360 }} 
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
           className="w-48 h-48 sm:w-64 sm:h-64 rounded-full border-4 border-dashed border-cyan-500/30 flex items-center justify-center shadow-[0_0_50px_rgba(34,211,238,0.2)]"
         >
-          <motion.div 
-            animate={{ rotate: -360, scale: [1, 1.1, 1] }} 
+          <motion.button 
+            onClick={handleWarpCoreTap}
+            whileTap={{ scale: 0.9, rotate: -360 }}
+            animate={{ rotate: -360, scale: [1, 1.05, 1] }} 
             transition={{ rotate: { duration: 15, repeat: Infinity, ease: "linear" }, scale: { duration: 4, repeat: Infinity, ease: "easeInOut" } }}
-            className="w-32 h-32 sm:w-48 sm:h-48 rounded-full border border-purple-500/50 flex items-center justify-center bg-gradient-to-br from-purple-900/40 to-cyan-900/40 backdrop-blur-sm"
+            className="w-32 h-32 sm:w-48 sm:h-48 rounded-full border border-purple-500/50 flex items-center justify-center bg-gradient-to-br from-purple-900/40 to-cyan-900/40 backdrop-blur-sm cursor-pointer hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-shadow"
           >
              <Zap className="w-12 h-12 text-cyan-400 opacity-80" />
-          </motion.div>
+          </motion.button>
         </motion.div>
       </div>
 
