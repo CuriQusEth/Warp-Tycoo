@@ -27,8 +27,10 @@ export const baseVibenet = defineChain({
 
 /**
  * Denim Migration Spec:
- * Denim replaces Flashblocks with native 200ms canonical blocks.
- * Flashblocks subscriptions and "pending" state are unavailable after activation.
+ * Denim activated on Base Sepolia on October 21, 2026 at 18:00 UTC
+ * and on Base Mainnet on November 5, 2026 at 18:00 UTC.
+ * Base stopped producing Flashblocks on both networks at activation.
+ * Flashblocks subscriptions, WebSocket streams, and pending state are retired.
  */
 export interface DenimMigrationItem {
   deprecatedFeature: string;
@@ -38,6 +40,12 @@ export interface DenimMigrationItem {
 }
 
 export const DENIM_MIGRATION_CHECKLIST: DenimMigrationItem[] = [
+  {
+    deprecatedFeature: 'Flashblocks WebSockets (wss://*.flashblocks.base.org/ws)',
+    actionForDenim: 'eth_subscribe("newHeads") / ("logs") on standard WebSocket RPC',
+    status: 'migrated',
+    description: 'Flashblocks WebSocket streams retired (no longer stream data). Use canonical newHeads / logs.'
+  },
   {
     deprecatedFeature: 'eth_subscribe("newFlashblocks")',
     actionForDenim: 'eth_subscribe("newHeads")',
@@ -52,33 +60,51 @@ export const DENIM_MIGRATION_CHECKLIST: DenimMigrationItem[] = [
   },
   {
     deprecatedFeature: 'eth_subscribe("newFlashblockTransactions")',
-    actionForDenim: 'eth_subscribe("newHeads") + getBlock',
+    actionForDenim: 'eth_subscribe("newHeads") + getBlock transactions',
     status: 'migrated',
     description: 'Fetch transactions directly for each canonical 200ms block.'
   },
   {
     deprecatedFeature: 'eth_getBlockByNumber("pending", ...)',
-    actionForDenim: 'eth_getBlockByNumber("latest", ...)',
+    actionForDenim: 'Normal RPC calls for latest canonical blocks',
     status: 'migrated',
-    description: 'Pending block tag removed. Normal RPC reads latest canonical 200ms blocks.'
+    description: 'Pending block tag no longer exposes preconfirmations; resolves to latest canonical block.'
   },
   {
-    deprecatedFeature: 'eth_getBalance(..., "pending")',
-    actionForDenim: 'eth_getBalance(..., "latest")',
+    deprecatedFeature: 'eth_getBalance / eth_getTransactionCount(..., "pending")',
+    actionForDenim: 'Normal RPC calls to read latest canonical state',
     status: 'migrated',
-    description: 'Normal RPC calls to read latest canonical state.'
+    description: 'Read latest canonical state directly from 200ms blocks.'
   },
   {
     deprecatedFeature: 'eth_call / eth_estimateGas(..., "pending")',
-    actionForDenim: 'eth_call / eth_estimateGas(..., "latest")',
+    actionForDenim: 'Normal RPC calls to read latest canonical state',
     status: 'migrated',
     description: 'Simulations and gas estimation execute against canonical latest state.'
   },
   {
-    deprecatedFeature: 'Flashblocks preconfirmation assumptions',
-    actionForDenim: 'Native 200ms canonical blocks (5 bps)',
+    deprecatedFeature: 'base_transactionStatus',
+    actionForDenim: 'Canonical receipts via eth_getTransactionReceipt',
     status: 'migrated',
-    description: 'No distinction between preconfirmed and canonical; all blocks are canonical.'
+    description: 'Public endpoints reject base_transactionStatus; standard receipts available in ~200ms.'
+  },
+  {
+    deprecatedFeature: 'eth_getTransactionReceipt for preconfirmed tx',
+    actionForDenim: 'Standard receipt polling on canonical 200ms blocks',
+    status: 'migrated',
+    description: 'Receipt is available as soon as tx is included in canonical 200ms block. No preconfirmed state.'
+  },
+  {
+    deprecatedFeature: 'Validity tx with flashblock_index predicate',
+    actionForDenim: 'Bound transactions with block_number only',
+    status: 'migrated',
+    description: 'flashblock_index predicates rejected. Blocks are built every 200ms without flashblocks.'
+  },
+  {
+    deprecatedFeature: 'BLOCKHASH 256-block history assumptions',
+    actionForDenim: 'Adjust history assumptions (covers ~51.2s instead of ~512s)',
+    status: 'migrated',
+    description: '200ms blocks mean the 256-block history covers 1/10th of elapsed time.'
   }
 ];
 
@@ -89,6 +115,7 @@ export interface DenimNetworkConfig {
   blockTimeMs: number;
   blocksPerSecond: number;
   isDenimLive: boolean;
+  activationDate: string;
   notes: string;
 }
 
@@ -96,20 +123,22 @@ export const DENIM_NETWORKS: Record<number, DenimNetworkConfig> = {
   8453: {
     name: 'Base Mainnet',
     chainId: 8453,
-    denimStatus: 'Denim Upgrade Activated (Native 200ms Blocks)',
+    denimStatus: 'Denim Live on Mainnet (Activated Nov 5, 2026)',
     blockTimeMs: 200,
     blocksPerSecond: 5,
     isDenimLive: true,
-    notes: 'Base Mainnet 200ms native block cadence.'
+    activationDate: 'November 5, 2026 at 18:00 UTC',
+    notes: 'Base Mainnet transitioned from Flashblocks to canonical 200ms native blocks.'
   },
   84532: {
     name: 'Base Sepolia',
     chainId: 84532,
-    denimStatus: 'Denim Active (Since Oct 21, 2026)',
+    denimStatus: 'Denim Live on Testnet (Activated Oct 21, 2026)',
     blockTimeMs: 200,
     blocksPerSecond: 5,
     isDenimLive: true,
-    notes: 'Denim activated on Base Sepolia on October 21, 2026 at 18:00 UTC.'
+    activationDate: 'October 21, 2026 at 18:00 UTC',
+    notes: 'Base Sepolia activated Denim first; 200ms native blocks live.'
   },
   84538453: {
     name: 'Base Vibenet',
@@ -118,6 +147,7 @@ export const DENIM_NETWORKS: Record<number, DenimNetworkConfig> = {
     blockTimeMs: 200,
     blocksPerSecond: 5,
     isDenimLive: true,
-    notes: 'Vibenet 200ms native blocks live for experimental developer testing.'
+    activationDate: 'Pre-release Devnet',
+    notes: 'Vibenet 200ms native blocks for experimental developer testing.'
   }
 };

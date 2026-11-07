@@ -62,9 +62,9 @@ export function HUD() {
         <div>
           <div className="text-[10px] text-cyan-300 font-semibold tracking-wider font-mono flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            DENIM 200ms
+            DENIM MAINNET
           </div>
-          <div className="text-xs font-bold text-slate-300 font-mono tracking-tight">5 Blocks / Sec</div>
+          <div className="text-xs font-bold text-slate-300 font-mono tracking-tight">200ms · 5 BPS</div>
         </div>
       </motion.div>
 

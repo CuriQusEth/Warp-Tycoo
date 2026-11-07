@@ -22,14 +22,15 @@ export function useDenimBlocks() {
   const [flashblocksMigrated] = useState<boolean>(true);
   const lastBlockRef = useRef<{ number: bigint; time: number } | null>(null);
 
-  const networkConfig: DenimNetworkConfig = DENIM_NETWORKS[chainId] || {
-    name: 'Base Network',
-    chainId: chainId || 8453,
-    denimStatus: 'Denim Compatible (200ms Canonical Blocks)',
+  const networkConfig: DenimNetworkConfig = DENIM_NETWORKS[chainId] || DENIM_NETWORKS[8453] || {
+    name: 'Base Mainnet',
+    chainId: 8453,
+    denimStatus: 'Denim Live on Mainnet (Activated Nov 5, 2026)',
     blockTimeMs: 200,
     blocksPerSecond: 5,
     isDenimLive: true,
-    notes: 'Standard 200ms canonical execution mode.'
+    activationDate: 'November 5, 2026 at 18:00 UTC',
+    notes: 'Base Mainnet 200ms canonical execution mode.'
   };
 
   // Canonical block reception via standard newHeads / RPC latest tag

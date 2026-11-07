@@ -9,8 +9,8 @@ export const wagmiConfig = createConfig({
     injected(),
   ],
   transports: {
-    [base.id]: http(),
-    [baseSepolia.id]: http(),
+    [base.id]: http('https://mainnet.base.org'),
+    [baseSepolia.id]: http('https://sepolia.base.org'),
     [baseVibenet.id]: http('https://rpc.vibes.base.org'),
   },
 });
